@@ -1,0 +1,15 @@
+fileFormatVersion: 2
+guid: e87e53ed46b8ab14c826f99c5e087dc6
+timeCreated: 1480257607
+licenseType: Free
+MonoImporter:
+  serializedVersion: 2
+  defaultReferences:
+  - levelButtonPrefab: {fileID: 1000012431897450, guid: 887419ebde0ed084f936c91a0463d29a,
+      type: 2}
+  - levelButtonContainer: {instanceID: 0}
+  executionOrder: 0
+  icon: {instanceID: 0}
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
