@@ -22,11 +22,8 @@ public class GameManager : MonoBehaviour {
         {
             currentSkinIndex = PlayerPrefs.GetInt("CurrentSkin");
             currency = PlayerPrefs.GetInt("Currency");
-			Dictionary<string, bool[]> aux = JsonUtility.FromJson<Dictionary<string, bool[]>>(PlayerPrefs.GetString("SkinAvailability"));
-			if (aux.ContainsKey("skinAvailability"))
-            {
-				this.skinAvailability = aux["skinAvailability"];
-            }
+			SkinAvailabilitySave skinSave = JsonUtility.FromJson<SkinAvailabilitySave>(PlayerPrefs.GetString("SkinAvailability"));
+			this.skinAvailability = skinSave.data;
         }
         else
         {
@@ -38,7 +35,9 @@ public class GameManager : MonoBehaviour {
     {
 		PlayerPrefs.SetInt("CurrentSkin", Instance.currentSkinIndex);
 		PlayerPrefs.SetInt("Currency", Instance.currency);
-		string skinsJson = JsonUtility.ToJson (new Dictionary<string, bool[]>(){ {"skinAvailability", Instance.skinAvailability } });
+		SkinAvailabilitySave skinSave = new SkinAvailabilitySave ();
+		skinSave.data = skinAvailability;
+		string skinsJson = JsonUtility.ToJson (skinSave);
 		Debug.Log (skinsJson);
 		Debug.Log (JsonUtility.ToJson (Instance));
         PlayerPrefs.SetString("SkinAvailability", skinsJson);
@@ -51,4 +50,7 @@ public class GameManager : MonoBehaviour {
         return skinAvailability[index];
     }
 
+	class SkinAvailabilitySave {
+		public bool[] data;
+	}
 }

@@ -43,6 +43,9 @@ public class MainMenu : MonoBehaviour {
 
             int i = index;
             container.GetComponent<Button>().onClick.AddListener(() => ChangePlayerSkin(i));
+			if (GameManager.Instance.skinAvailability[index]) {
+				container.transform.GetChild (0).gameObject.SetActive (false);
+			}
             index++;
         }
     }
@@ -85,10 +88,18 @@ public class MainMenu : MonoBehaviour {
 
     private void ChangePlayerSkin(int index)
     {
-        if (!GameManager.Instance.HasSkin(index))
-        {
-            return;
-        }
+		if (!GameManager.Instance.HasSkin (index)) {
+			int cost = 100;
+
+			if (GameManager.Instance.currency >= cost) {
+				GameManager.Instance.currency -= cost;
+				GameManager.Instance.skinAvailability [index] = true;
+				shopButtonContainer.transform.GetChild (index).GetChild (0).gameObject.SetActive (false);
+				currencyText.text = "Currency: " + GameManager.Instance.currency.ToString();
+			} else {
+				return;
+			}
+		} 
 
         float x = (index % 4) * 0.25f;
         float y = ((int)index / 4) * 0.25f;
