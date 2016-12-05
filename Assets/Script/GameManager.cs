@@ -38,8 +38,8 @@ public class GameManager : MonoBehaviour {
 		SkinAvailabilitySave skinSave = new SkinAvailabilitySave ();
 		skinSave.data = skinAvailability;
 		string skinsJson = JsonUtility.ToJson (skinSave);
-		Debug.Log (skinsJson);
-		Debug.Log (JsonUtility.ToJson (Instance));
+		//Debug.Log (skinsJson);
+		//Debug.Log (JsonUtility.ToJson (Instance));
         PlayerPrefs.SetString("SkinAvailability", skinsJson);
     }
 
