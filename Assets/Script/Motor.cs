@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class Motor : MonoBehaviour {
 
@@ -8,11 +9,18 @@ public class Motor : MonoBehaviour {
 	public float drag = 0.5f;
 	public float terminalRotationSpeed = 25.0f;
 	public VirtualJoystick moveJoystick;
+	public Button boostButton;
+
+	public float boostSpeed = 100.0f;
+	public float boostCooldown = 5.0f;
+	private float lastBoost;
 
 	private Rigidbody controller;
 	private Transform camTransform;
 
 	void Start() {
+		lastBoost = Time.time - boostCooldown;
+
 		controller = GetComponent<Rigidbody> ();
 		controller.maxAngularVelocity = terminalRotationSpeed;
 		controller.drag = drag;
@@ -37,6 +45,18 @@ public class Motor : MonoBehaviour {
 		rotatedDir = rotatedDir.normalized * dir.magnitude;
 
 		controller.AddForce (rotatedDir * moveSpeed);
+	}
+
+	void LateUpdate() {
+		boostButton.interactable = Time.time - lastBoost > boostCooldown;
+	}
+
+	public void Boost() {
+		Debug.Log ("Boost");
+		if (Time.time - lastBoost > boostCooldown) {
+			controller.AddForce (controller.velocity.normalized * boostSpeed, ForceMode.VelocityChange);
+			lastBoost = Time.time;
+		}
 	}
 
 }
