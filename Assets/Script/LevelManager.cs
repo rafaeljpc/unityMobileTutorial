@@ -29,7 +29,6 @@ public class LevelManager : MonoBehaviour {
 	}
 
 	public void Victory() {
-		Debug.Log ("Victory");
 		float duration = Time.time - startTime;
 
 		if (duration < goldTime) {
@@ -44,7 +43,11 @@ public class LevelManager : MonoBehaviour {
 		GameManager.Instance.Save ();
 
 		string saveString = "";
-		saveString += duration.ToString ();
+		LevelData ld = new LevelData (SceneManager.GetActiveScene ().name);
+		if (ld.BestTime < duration || ld.BestTime == 0.0f)
+			saveString += ld.BestTime.ToString ();
+		else
+			saveString += duration.ToString ();
 		saveString += "&" + silverTime.ToString ();
 		saveString += "&" + goldTime.ToString ();
 		PlayerPrefs.SetString (SceneManager.GetActiveScene ().name, saveString);

@@ -3,6 +3,24 @@ using UnityEngine.UI;
 using System.Collections;
 using UnityEngine.SceneManagement;
 
+public class LevelData 
+{
+	public LevelData(string levelName) {
+		string data = PlayerPrefs.GetString (levelName);
+		if (data == "")
+			return;
+		
+		string[] allData = data.Split ('&');
+		BestTime = float.Parse (allData [0]);
+		SilverTime = float.Parse (allData [0]);
+		GoldTime = float.Parse (allData [0]);
+	}
+	
+	public float BestTime { set; get; }
+	public float GoldTime { set; get; }
+	public float SilverTime { set; get; }
+}
+
 public class MainMenu : MonoBehaviour {
 
     public GameObject levelButtonPrefab;
@@ -19,6 +37,8 @@ public class MainMenu : MonoBehaviour {
 
     private Transform cameraTransform;
     private Transform cameraDesiredLookAt;
+
+	private int[] costs = {0, 150, 150, 150, 300, 300, 300, 300, 500, 500, 500, 500, 1000, 1000, 1000, 1000};
 
     // Use this for initialization
     void Start ()
@@ -43,8 +63,10 @@ public class MainMenu : MonoBehaviour {
 
             int i = index;
             container.GetComponent<Button>().onClick.AddListener(() => ChangePlayerSkin(i));
-			if (GameManager.Instance.skinAvailability[index]) {
+			if (GameManager.Instance.skinAvailability [index]) {
 				container.transform.GetChild (0).gameObject.SetActive (false);
+			} else {
+				container.transform.GetChild (0).Find("Text").GetComponent<Text>().text = string.Format("$ {0:00}", costs[index]);
 			}
             index++;
         }
@@ -59,6 +81,8 @@ public class MainMenu : MonoBehaviour {
             GameObject container = Instantiate(levelButtonPrefab) as GameObject;
             container.GetComponent<Image>().sprite = thumb;
             container.transform.SetParent(levelButtonContainer.transform, false);
+			LevelData ld = new LevelData (thumb.name);
+			container.transform.GetChild(0).GetChild(0).GetComponent<Text>().text = ld.BestTime.ToString("F");
 
             string sceneName = thumb.name;
             container.GetComponent<Button>().onClick.AddListener(() => LoadLevel(sceneName));
@@ -75,7 +99,6 @@ public class MainMenu : MonoBehaviour {
 
     private void LoadLevel(string sceneName)
     {
-        Debug.Log(sceneName);
         SceneManager.LoadScene(sceneName);
 
     }
@@ -89,7 +112,7 @@ public class MainMenu : MonoBehaviour {
     private void ChangePlayerSkin(int index)
     {
 		if (!GameManager.Instance.HasSkin (index)) {
-			int cost = 100;
+			int cost = costs[index];
 
 			if (GameManager.Instance.currency >= cost) {
 				GameManager.Instance.currency -= cost;
